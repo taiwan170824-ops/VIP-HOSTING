@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BotHost • Premium Bot Hosting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        
+        .animate-fade-up { animation: fadeUp 0.8s ease forwards; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .gradient-text { background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 300% 300%; animation: gradient 4s ease infinite; }
+        
+        body { background: #0a0e1a; color: #f1f5f9; overflow-x: hidden; }
+        .glass { background: rgba(255,255,255, 0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255, 0.06); }
+        .glass-card { background: rgba(255,255,255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255, 0.06); transition: all 0.4s ease; }
+        .glass-card:hover { transform: translateY(-8px); border-color: rgba(99,102,241, 0.3); box-shadow: 0 20px 60px rgba(99,102,241, 0.1); }
+        
+        .btn-primary { background: linear-gradient(135deg, #6366f1, #a855f7); transition: all 0.3s ease; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(99,102,241, 0.3); }
+        .btn-secondary { background: rgba(255,255,255, 0.05); border: 1px solid rgba(255,255,255, 0.1); transition: all 0.3s ease; }
+        .btn-secondary:hover { background: rgba(255,255,255, 0.1); transform: translateY(-3px); }
+        
+        .price-card { position: relative; overflow: hidden; }
+        .price-card .badge { position: absolute; top: -10px; right: -10px; background: linear-gradient(135deg, #ec4899, #a855f7); padding: 4px 16px; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; color: white; transform: rotate(5deg); }
+        .feature-list li { position: relative; padding-left: 24px; margin-bottom: 6px; color: #94a3b8; }
+        .feature-list li::before { content: '✓'; position: absolute; left: 0; color: #34d399; font-weight: 700; }
+        
+        .modal { animation: scaleIn 0.3s ease forwards; }
+        
+        .floating-shape { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.3; pointer-events: none; z-index: -1; }
+        .floating-shape:nth-child(1) { width: 400px; height: 400px; top: -100px; right: -100px; background: #6366f1; }
+        .floating-shape:nth-child(2) { width: 300px; height: 300px; bottom: 0; left: 0; background: #a855f7; }
+        .floating-shape:nth-child(3) { width: 200px; height: 200px; top: 50%; left: 50%; background: #ec4899; transform: translate(-50%, -50%); }
+        
+        @media (max-width: 640px) { .floating-shape { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="floating-shape"></div>
+<div class="floating-shape"></div>
+<div class="floating-shape"></div>
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    <i class="fas fa-robot text-white text-xl"></i>
+                </div>
+                <span class="font-display text-2xl font-bold">Bot<span class="gradient-text">Host</span></span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-sm text-slate-400 hover:text-white transition">Features</a>
+                <a href="#plans" class="text-sm text-slate-400 hover:text-white transition">Plans</a>
+                <a href="#testimonials" class="text-sm text-slate-400 hover:text-white transition">Testimonials</a>
+                <a href="/login" class="btn-secondary px-5 py-2 rounded-2xl text-sm font-semibold"><i class="fas fa-sign-in-alt mr-2"></i>Login</a>
+            </div>
+            <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="md:hidden text-2xl text-slate-400"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden glass border-t border-white/5 p-4">
+        <div class="flex flex-col gap-3">
+            <a href="#features" class="text-slate-400 hover:text-white py-2">Features</a>
+            <a href="#plans" class="text-slate-400 hover:text-white py-2">Plans</a>
+            <a href="#testimonials" class="text-slate-400 hover:text-white py-2">Testimonials</a>
+            <a href="/login" class="btn-primary px-5 py-3 rounded-2xl text-center font-semibold">Login</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="min-h-screen flex items-center pt-20 pb-12 px-4">
+    <div class="max-w-7xl mx-auto w-full">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="animate-fade-up"><span class="inline-block px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold uppercase border border-indigo-500/20">🚀 Premium Bot Hosting</span></div>
+                <h1 class="font-display text-5xl md:text-7xl font-bold leading-tight animate-fade-up delay-1">Host Your Bots<br><span class="gradient-text">Like a Pro</span></h1>
+                <p class="text-lg text-slate-400 max-w-lg animate-fade-up delay-2">Deploy, manage, and scale your Telegram bots with enterprise-grade security and 99.9% uptime.</p>
+                <div class="flex flex-wrap gap-4 animate-fade-up delay-3">
+                    <a href="#plans" class="btn-primary px-8 py-4 rounded-2xl font-semibold flex items-center gap-2">Get Started <i class="fas fa-arrow-right"></i></a>
+                    <a href="#tutorial" class="btn-secondary px-8 py-4 rounded-2xl font-semibold flex items-center gap-2"><i class="fas fa-play-circle"></i> Watch Demo</a>
+                </div>
+                <div class="flex items-center gap-8 animate-fade-up delay-4">
+                    <div><div class="text-2xl font-bold">10K+</div><div class="text-xs text-slate-500">Bots Hosted</div></div>
+                    <div><div class="text-2xl font-bold text-emerald-400">99.9%</div><div class="text-xs text-slate-500">Uptime</div></div>
+                    <div><div class="text-2xl font-bold">24/7</div><div class="text-xs text-slate-500">Support</div></div>
+                </div>
+            </div>
+            <div class="relative animate-float hidden md:block">
+                <div class="glass rounded-3xl p-8 border border-white/10">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center"><i class="fas fa-robot text-white text-2xl"></i></div>
+                        <div><div class="font-semibold">Live Bot Status</div><div class="text-xs text-emerald-400">● 3 bots running</div></div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-white/5 rounded-2xl"><div><div class="text-sm font-medium">Echo Bot</div><div class="text-xs text-slate-500">Telegram • 2 min ago</div></div><span class="text-xs text-emerald-400 font-semibold">● Running</span></div>
+                        <div class="flex items-center justify-between p-3 bg-white/5 rounded-2xl"><div><div class="text-sm font-medium">AI Chat Bot</div><div class="text-xs text-slate-500">Telegram • 5 min ago</div></div><span class="text-xs text-emerald-400 font-semibold">● Running</span></div>
+                        <div class="flex items-center justify-between p-3 bg-white/5 rounded-2xl"><div><div class="text-sm font-medium">Admin Bot</div><div class="text-xs text-slate-500">Telegram • 1 hour ago</div></div><span class="text-xs text-slate-500 font-semibold">● Stopped</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TUTORIAL BANNER -->
+<section id="tutorial" class="py-16 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-indigo-500/20">
+            <div class="relative p-8 md:p-12 text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/20 text-red-400 text-xs font-semibold border border-red-500/20 mb-4">
+                    <i class="fas fa-circle text-[6px] text-red-400 animate-pulse"></i> Watch Tutorial
+                </div>
+                <h2 class="font-display text-2xl md:text-4xl font-bold mb-3">Getting Started with BotHost</h2>
+                <p class="text-slate-400 mb-6 max-w-2xl mx-auto">Learn how to deploy your first Telegram bot in under 5 minutes.</p>
+                <a href="https://youtube.com/watch?v=your-tutorial" target="_blank" class="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 transition px-8 py-4 rounded-2xl font-semibold border border-white/10">
+                    <i class="fas fa-play-circle text-3xl text-red-400"></i> Watch Tutorial Video <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold uppercase border border-indigo-500/20 mb-4">Why Choose BotHost</span>
+            <h2 class="font-display text-4xl md:text-5xl font-bold">Everything You Need to<br><span class="gradient-text">Succeed</span></h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="glass-card rounded-3xl p-8 text-center animate-fade-up delay-1"><div class="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-4"><i class="fas fa-rocket text-3xl text-indigo-400"></i></div><h3 class="font-semibold text-xl mb-2">Instant Deployment</h3><p class="text-sm text-slate-400">Deploy your bot in seconds with one-click deployment.</p></div>
+            <div class="glass-card rounded-3xl p-8 text-center animate-fade-up delay-2"><div class="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-4"><i class="fas fa-shield-alt text-3xl text-emerald-400"></i></div><h3 class="font-semibold text-xl mb-2">Enterprise Security</h3><p class="text-sm text-slate-400">End-to-end encryption and advanced threat protection.</p></div>
+            <div class="glass-card rounded-3xl p-8 text-center animate-fade-up delay-3"><div class="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mx-auto mb-4"><i class="fas fa-chart-line text-3xl text-purple-400"></i></div><h3 class="font-semibold text-xl mb-2">Analytics & Monitoring</h3><p class="text-sm text-slate-400">Real-time logs and performance monitoring.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING -->
+<section id="plans" class="py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold uppercase border border-indigo-500/20 mb-4">Pricing Plans</span>
+            <h2 class="font-display text-4xl md:text-5xl font-bold">Choose Your <span class="gradient-text">Plan</span></h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <!-- Trial -->
+            <div class="price-card glass-card rounded-3xl p-8 text-center animate-fade-up delay-1">
+                <div class="badge">Trial</div>
+                <div class="text-4xl font-display font-bold mb-2">₹0</div>
+                <div class="text-xs text-slate-500 mb-6">2 Days • 1 Bot</div>
+                <ul class="feature-list text-left mb-6"><li>1 Bot</li><li>2 Days Duration</li><li>Basic Monitoring</li><li>Community Support</li></ul>
+                <button onclick="selectPlan('trial')" class="btn-secondary w-full py-3 rounded-2xl font-semibold text-sm"><i class="fas fa-play mr-2"></i>Start Free Trial</button>
+            </div>
+            <!-- Basic -->
+            <div class="price-card glass-card rounded-3xl p-8 text-center animate-fade-up delay-2 border border-indigo-500/30">
+                <div class="badge" style="background:linear-gradient(135deg,#6366f1,#a855f7);">Popular</div>
+                <div class="text-4xl font-display font-bold mb-2">₹29</div>
+                <div class="text-xs text-slate-500 mb-6">30 Days • 3 Bots</div>
+                <ul class="feature-list text-left mb-6"><li>3 Bots</li><li>30 Days Duration</li><li>Full Monitoring</li><li>Premium Support</li><li>File Manager</li><li>Analytics</li></ul>
+                <button onclick="selectPlan('basic')" class="btn-primary w-full py-3 rounded-2xl font-semibold text-sm"><i class="fas fa-crown mr-2"></i>Get Started</button>
+            </div>
+            <!-- Pro -->
+            <div class="price-card glass-card rounded-3xl p-8 text-center animate-fade-up delay-3">
+                <div class="badge" style="background:linear-gradient(135deg,#ec4899,#a855f7);">Pro</div>
+                <div class="text-4xl font-display font-bold mb-2">₹50</div>
+                <div class="text-xs text-slate-500 mb-6">30 Days • 6 Bots</div>
+                <ul class="feature-list text-left mb-6"><li>6 Bots</li><li>30 Days Duration</li><li>Advanced Monitoring</li><li>Priority Support</li><li>File Manager</li><li>Advanced Analytics</li><li>Custom Domain</li></ul>
+                <button onclick="selectPlan('pro')" class="btn-primary w-full py-3 rounded-2xl font-semibold text-sm"><i class="fas fa-star mr-2"></i>Get Pro</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold uppercase border border-indigo-500/20 mb-4">Testimonials</span>
+            <h2 class="font-display text-4xl md:text-5xl font-bold">What Our <span class="gradient-text">Users Say</span></h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="glass-card rounded-3xl p-6 animate-fade-up delay-1"><div class="flex text-amber-400 text-sm mb-3">★★★★★</div><p class="text-sm text-slate-300 mb-4">"Best bot hosting platform I've ever used. The file manager is game-changing!"</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-bold">RK</div><div><div class="text-sm font-semibold">Rahul Kumar</div><div class="text-xs text-slate-500">Developer</div></div></div></div>
+            <div class="glass-card rounded-3xl p-6 animate-fade-up delay-2"><div class="flex text-amber-400 text-sm mb-3">★★★★★</div><p class="text-sm text-slate-300 mb-4">"Auto-restart feature saved my bot multiple times. Highly recommended!"</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-sm font-bold">AS</div><div><div class="text-sm font-semibold">Ankit Sharma</div><div class="text-xs text-slate-500">Bot Developer</div></div></div></div>
+            <div class="glass-card rounded-3xl p-6 animate-fade-up delay-3"><div class="flex text-amber-400 text-sm mb-3">★★★★★</div><p class="text-sm text-slate-300 mb-4">"Amazing support and unbeatable pricing. Best investment for my projects."</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-sm font-bold">PM</div><div><div class="text-sm font-semibold">Priya Mehta</div><div class="text-xs text-slate-500">Entrepreneur</div></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-white/5 py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"><i class="fas fa-robot text-white text-xl"></i></div><span class="font-display text-2xl font-bold">BotHost</span></div><p class="text-sm text-slate-400">Premium Telegram Bot Hosting</p></div>
+            <div><h4 class="font-semibold mb-3">Quick Links</h4><ul class="space-y-2 text-sm text-slate-400"><li><a href="#features" class="hover:text-white">Features</a></li><li><a href="#plans" class="hover:text-white">Pricing</a></li><li><a href="#testimonials" class="hover:text-white">Testimonials</a></li></ul></div>
+            <div><h4 class="font-semibold mb-3">Support</h4><ul class="space-y-2 text-sm text-slate-400"><li><a href="#" class="hover:text-white">Help Center</a></li><li><a href="#" class="hover:text-white">Documentation</a></li><li><a href="#" class="hover:text-white">Contact</a></li></ul></div>
+            <div><h4 class="font-semibold mb-3">Connect</h4><div class="flex gap-4"><a href="#" class="w-12 h-12 rounded-2xl bg-white/5 hover:bg-white/10 transition flex items-center justify-center text-xl text-pink-400"><i class="fab fa-instagram"></i></a><a href="#" class="w-12 h-12 rounded-2xl bg-white/5 hover:bg-white/10 transition flex items-center justify-center text-xl text-sky-400"><i class="fab fa-telegram"></i></a><a href="#" class="w-12 h-12 rounded-2xl bg-white/5 hover:bg-white/10 transition flex items-center justify-center text-xl text-red-400"><i class="fab fa-youtube"></i></a></div></div>
+        </div>
+        <div class="border-t border-white/5 mt-8 pt-8 text-center text-xs text-slate-500">&copy; 2024 BotHost. All rights reserved.</div>
+    </div>
+</footer>
+
+<!-- ====== MODAL 1: TELEGRAM + CODE ====== -->
+<div id="telegramModal" class="hidden fixed inset-0 bg-black/90 z-[200] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-lg rounded-3xl p-8 modal border border-white/10 max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <div><h3 class="text-2xl font-bold">Payment</h3><p class="text-sm text-slate-400">Step 1: Contact on Telegram</p></div>
+            <button onclick="closeTelegramModal()" class="text-slate-400 hover:text-white p-2 rounded-xl"><i class="fas fa-times text-xl"></i></button>
+        </div>
+
+        <div id="telegramContent">
+            <!-- Plan Info -->
+            <div class="bg-white/5 rounded-2xl p-4 text-center mb-6">
+                <p class="text-xs text-slate-400">Selected Plan</p>
+                <p class="text-xl font-bold text-white" id="tgPlanName">BASIC</p>
+                <p class="text-emerald-400 font-bold" id="tgPlanPrice">₹29</p>
+                <p class="text-xs text-slate-500" id="tgPlanDetails">3 Bots • 30 Days</p>
+            </div>
+
+            <!-- Telegram Button -->
+            <div class="mb-6">
+                <p class="text-xs text-slate-400 mb-2">Click below to contact on Telegram</p>
+                <a id="tgLink" href="#" target="_blank" 
+                   class="btn-primary w-full py-3 rounded-2xl font-semibold inline-flex items-center justify-center gap-2">
+                    <i class="fab fa-telegram"></i> Message on Telegram
+                </a>
+                <p class="text-[10px] text-slate-500 text-center mt-2">Message will be pre-filled with plan details</p>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-white/10 mb-6"></div>
+
+            <!-- Code Entry -->
+            <div>
+                <p class="text-xs text-slate-400 mb-2">Step 2: Enter the code received on Telegram</p>
+                <div class="flex gap-2">
+                    <input type="text" id="paymentCode" placeholder="Enter your payment code" 
+                           class="flex-1 bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-indigo-500">
+                    <button onclick="verifyCode()" id="verifyBtn" class="btn-primary px-6 py-3 rounded-2xl font-semibold text-sm whitespace-nowrap">
+                        Verify
+                    </button>
+                </div>
+                <div id="codeStatus" class="mt-2 text-sm hidden"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== MODAL 2: ACCOUNT CREATE ====== -->
+<div id="accountModal" class="hidden fixed inset-0 bg-black/90 z-[200] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-lg rounded-3xl p-8 modal border border-white/10">
+        <div class="flex justify-between items-center mb-6">
+            <div><h3 class="text-2xl font-bold">Create Account</h3><p class="text-sm text-slate-400">Step 3: Final step</p></div>
+            <button onclick="closeAccountModal()" class="text-slate-400 hover:text-white p-2 rounded-xl"><i class="fas fa-times text-xl"></i></button>
+        </div>
+
+        <div id="accountContent">
+            <!-- Plan Info -->
+            <div class="bg-white/5 rounded-2xl p-4 text-center mb-6">
+                <p class="text-xs text-slate-400">Your Account Details</p>
+                <p class="text-lg font-bold text-white" id="accPlanName">BASIC</p>
+                <p class="text-emerald-400 font-bold" id="accPlanPrice">₹29</p>
+                <p class="text-xs text-slate-500" id="accPlanDetails">3 Bots • 30 Days</p>
+            </div>
+
+            <!-- Account Form -->
+            <div class="space-y-3">
+                <p class="text-xs text-slate-400">Choose your credentials</p>
+                <input type="text" id="accUsername" placeholder="Choose username" 
+                       class="w-full bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-indigo-500">
+                <input type="text" id="accPassword" placeholder="Choose password" 
+                       class="w-full bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-indigo-500">
+                <button onclick="createAccount()" id="createAccBtn" class="btn-primary w-full py-3 rounded-2xl font-semibold">
+                    <i class="fas fa-user-plus mr-2"></i>Create Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentPlan = null;
+let currentPlanData = null;
+
+function selectPlan(plan) {
+    currentPlan = plan;
+    const plans = {
+        basic: { name: 'BASIC', price: '29', bots: 3, days: 30 },
+        pro: { name: 'PRO', price: '50', bots: 6, days: 30 },
+        trial: { name: 'FREE TRIAL', price: '0', bots: 1, days: 2 }
+    };
+    
+    if (plan === 'trial') {
+        showTrialModal();
+        return;
+    }
+    
+    currentPlanData = plans[plan];
+    
+    fetch('/api/payment/initiate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ plan })
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            showTelegramModal(d);
+        } else {
+            alert(d.error || 'Something went wrong');
+        }
+    })
+    .catch(() => alert('Network error'));
+}
+
+function showTelegramModal(data) {
+    document.getElementById('tgPlanName').textContent = data.plan.toUpperCase();
+    document.getElementById('tgPlanPrice').textContent = '₹' + data.price;
+    document.getElementById('tgPlanDetails').textContent = data.bots + ' Bots • ' + data.days + ' Days';
+    document.getElementById('tgLink').href = data.telegram_link;
+    document.getElementById('paymentCode').value = '';
+    document.getElementById('codeStatus').classList.add('hidden');
+    document.getElementById('telegramModal').classList.remove('hidden');
+}
+
+function closeTelegramModal() {
+    document.getElementById('telegramModal').classList.add('hidden');
+}
+
+function verifyCode() {
+    const code = document.getElementById('paymentCode').value.trim();
+    const status = document.getElementById('codeStatus');
+    const btn = document.getElementById('verifyBtn');
+    
+    if (!code) {
+        status.textContent = '❌ Please enter your payment code';
+        status.className = 'mt-2 text-sm text-red-400';
+        status.classList.remove('hidden');
+        return;
+    }
+    
+    btn.innerHTML = 'Verifying...';
+    btn.disabled = true;
+    
+    fetch('/api/payment/verify-code', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ code })
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            status.textContent = '✅ ' + d.message;
+            status.className = 'mt-2 text-sm text-emerald-400';
+            status.classList.remove('hidden');
+            
+            setTimeout(() => {
+                closeTelegramModal();
+                showAccountModal();
+            }, 600);
+        } else {
+            status.textContent = d.error || '❌ Invalid code';
+            status.className = 'mt-2 text-sm text-red-400';
+            status.classList.remove('hidden');
+            btn.innerHTML = 'Verify';
+            btn.disabled = false;
+        }
+    })
+    .catch(() => {
+        status.textContent = '❌ Network error';
+        status.className = 'mt-2 text-sm text-red-400';
+        status.classList.remove('hidden');
+        btn.innerHTML = 'Verify';
+        btn.disabled = false;
+    });
+}
+
+function showAccountModal() {
+    document.getElementById('accPlanName').textContent = currentPlanData.name;
+    document.getElementById('accPlanPrice').textContent = '₹' + currentPlanData.price;
+    document.getElementById('accPlanDetails').textContent = currentPlanData.bots + ' Bots • ' + currentPlanData.days + ' Days';
+    document.getElementById('accUsername').value = '';
+    document.getElementById('accPassword').value = '';
+    document.getElementById('accountModal').classList.remove('hidden');
+}
+
+function closeAccountModal() {
+    document.getElementById('accountModal').classList.add('hidden');
+}
+
+function createAccount() {
+    const username = document.getElementById('accUsername').value.trim();
+    const password = document.getElementById('accPassword').value.trim();
+    const btn = document.getElementById('createAccBtn');
+    
+    if (!username || !password) {
+        alert('Please enter username and password');
+        return;
+    }
+    
+    btn.innerHTML = 'Creating...';
+    btn.disabled = true;
+    
+    fetch('/api/payment/create-account', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ username, password })
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            document.getElementById('accountContent').innerHTML = `
+                <div class="text-center py-8">
+                    <div class="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check-circle text-5xl text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Account Created! 🎉</h3>
+                    <p class="text-slate-400 mb-4">Welcome to BotHost! Redirecting...</p>
+                </div>
+            `;
+            setTimeout(() => window.location.href = d.redirect, 1500);
+        } else {
+            alert(d.error || 'Failed to create account');
+            btn.innerHTML = 'Create Account';
+            btn.disabled = false;
+        }
+    })
+    .catch(() => {
+        alert('Network error');
+        btn.innerHTML = 'Create Account';
+        btn.disabled = false;
+    });
+}
+
+// ====== TRIAL ======
+function showTrialModal() {
+    document.getElementById('telegramModal').classList.remove('hidden');
+    document.getElementById('telegramContent').innerHTML = `
+        <div class="text-center py-4">
+            <div class="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-gift text-5xl text-emerald-400"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">Free Trial</h3>
+            <p class="text-slate-400 mb-6">2 Days • 1 Bot • No payment required</p>
+            <div class="border-t border-white/10 pt-6">
+                <p class="text-xs text-slate-400 mb-3">Create your free account</p>
+                <div class="space-y-3">
+                    <input type="text" id="trialUsername" placeholder="Choose username" 
+                           class="w-full bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-indigo-500">
+                    <input type="text" id="trialPassword" placeholder="Choose password" 
+                           class="w-full bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-indigo-500">
+                    <button onclick="createTrialAccount()" class="btn-primary w-full py-3 rounded-2xl font-semibold">
+                        <i class="fas fa-user-plus mr-2"></i>Create Free Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createTrialAccount() {
+    const username = document.getElementById('trialUsername').value.trim();
+    const password = document.getElementById('trialPassword').value.trim();
+    const btn = event.currentTarget;
+    
+    if (!username || !password) {
+        alert('Please enter username and password');
+        return;
+    }
+    
+    btn.innerHTML = 'Creating...';
+    btn.disabled = true;
+    
+    fetch('/api/payment/create-trial', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ username, password })
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            document.getElementById('telegramContent').innerHTML = `
+                <div class="text-center py-8">
+                    <div class="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check-circle text-5xl text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Account Created! 🎉</h3>
+                    <p class="text-slate-400 mb-4">Welcome to BotHost! Redirecting...</p>
+                </div>
+            `;
+            setTimeout(() => window.location.href = d.redirect, 1500);
+        } else {
+            alert(d.error || 'Failed to create account');
+            btn.innerHTML = 'Create Free Account';
+            btn.disabled = false;
+        }
+    })
+    .catch(() => {
+        alert('Network error');
+        btn.innerHTML = 'Create Free Account';
+        btn.disabled = false;
+    });
+}
+
+// Close modals on outside click
+document.getElementById('telegramModal').addEventListener('click', function(e) {
+    if (e.target === this) closeTelegramModal();
+});
+document.getElementById('accountModal').addEventListener('click', function(e) {
+    if (e.target === this) closeAccountModal();
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const tg = document.getElementById('telegramModal');
+        const acc = document.getElementById('accountModal');
+        if (!tg.classList.contains('hidden')) closeTelegramModal();
+        if (!acc.classList.contains('hidden')) closeAccountModal();
+    }
+});
+</script>
+</body>
+</html>
