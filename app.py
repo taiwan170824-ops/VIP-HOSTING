@@ -32,7 +32,7 @@ USERS_FILE = "bots_data/users.json"
 LOGS_DIR = "bots_data/logs"
 BOTS_DIR = "bots_data/bots"
 USED_CODES_FILE = "bots_data/used_codes.json"
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "mukeshX87")
 
 # Your Telegram details (HUMAN - NO BOT)
 TELEGRAM_USERNAME = os.environ.get("TELEGRAM_USERNAME", "btcXbitcoin")
